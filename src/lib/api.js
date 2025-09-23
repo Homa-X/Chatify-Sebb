@@ -5,16 +5,24 @@ const api = axios.create({
   withCredentials: true,
 });
 
-// attach Authorization header if token exists
+// Attach Authorization if present
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) config.headers.Authorization = `Bearer ${token}`;
   return config;
 });
 
-// CSRF setup (call before CSRF-protected routes)
+// CSRF: fetch token AND attach as header for subsequent protected requests
 export async function getCSRF() {
-  await api.patch("/csrf");
+  const res = await api.patch("/csrf");
+  const token =
+    res.data?.csrfToken ||
+    res.headers["x-csrf-token"] ||
+    res.headers["X-CSRF-Token"];
+  if (token) {
+    api.defaults.headers.common["X-CSRF-Token"] = token;
+  }
+  return token;
 }
 
 export default api;
