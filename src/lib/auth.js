@@ -8,7 +8,6 @@ export async function register(user) {
 }
 
 export async function login(user) {
-  await getCSRF();
   const res = await api.post("/auth/token", user);
   const token = res.data.token;
 
@@ -23,8 +22,10 @@ export async function login(user) {
 }
 
 export function logout() {
+  sessionStorage.removeItem("csrfToken");
   localStorage.removeItem("token");
   localStorage.removeItem("user");
+  location.href = '/';
 }
 
 export function getUser() {

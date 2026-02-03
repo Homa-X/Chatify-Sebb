@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { login } from "../lib/auth";
 import { useNavigate, Link } from "react-router-dom";
 
-export default function Login() {
+export default function Login({ csrfToken, setIsLoggedIn }) {
   const nav = useNavigate();
-  const [form, setForm] = useState({ email: "", password: "" });
+  const [form, setForm] = useState({
+    username: "",
+    password: "",
+    csrfToken: csrfToken
+  });
   const [msg, setMsg] = useState("");
 
   async function onSubmit(e) {
@@ -12,6 +16,7 @@ export default function Login() {
     setMsg("");
     try {
       await login(form);
+      setIsLoggedIn(true);
       nav("/chat");
     } catch (err) {
       setMsg(err.response?.data?.message || "Invalid credentials");
@@ -24,10 +29,10 @@ export default function Login() {
       {msg && <div className="note">{msg}</div>}
       <form onSubmit={onSubmit} className="col">
         <input
-          placeholder="Email"
-          type="email"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          placeholder="Username"
+          type="text"
+          value={form.username}
+          onChange={(e) => setForm({ ...form, username: e.target.value })}
           required
         />
         <input

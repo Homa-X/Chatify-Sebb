@@ -2,9 +2,9 @@ import { useState } from "react";
 import { register } from "../lib/auth";
 import { useNavigate, Link } from "react-router-dom";
 
-export default function Register() {
+export default function Register({ csrfToken }) {
   const nav = useNavigate();
-  const [form, setForm] = useState({ username: "", email: "", password: "" });
+  const [form, setForm] = useState({ username: "", email: "", password: "", csrfToken: csrfToken });
   const [msg, setMsg] = useState("");
 
   async function onSubmit(e) {

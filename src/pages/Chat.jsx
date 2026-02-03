@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api, { getCSRF } from "../lib/api";
+import api from "../lib/api";
 import DOMPurify from "dompurify";
 import { getUser } from "../lib/auth";
 
@@ -23,14 +23,12 @@ export default function Chat() {
     e.preventDefault();
     if (!text.trim()) return;
     const clean = DOMPurify.sanitize(text);
-    await getCSRF();
     await api.post("/messages", { text: clean, conversationId: conv });
     setText("");
     loadMessages();
   }
 
   async function deleteMessage(id) {
-    await getCSRF();
     await api.delete(`/messages/${id}`);
     loadMessages();
   }

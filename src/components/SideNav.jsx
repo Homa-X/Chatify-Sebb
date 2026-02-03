@@ -1,12 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import { logout, getUser } from "../lib/auth";
 
-export default function SideNav() {
+export default function SideNav({ setIsLoggedIn }) {
   const nav = useNavigate();
   const user = getUser();
 
   function doLogout() {
     logout();
+    setIsLoggedIn(false);
     nav("/login");
   }
 
